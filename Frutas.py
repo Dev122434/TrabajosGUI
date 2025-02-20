@@ -17,7 +17,7 @@ def actualizar_grafica():
                 color=color,
                 tooltip=fruta,
                 border_radius=10
-            )]
+            )],
         )
         for i, (fruta, color) in enumerate([
             ("Manzana", ft.colors.RED),
@@ -69,7 +69,7 @@ def main(page: ft.Page):
         bar_groups=actualizar_grafica(),
         border=ft.border.all(1, ft.colors.BLUE),
         left_axis=ft.ChartAxis(
-            labels_size=40, title=ft.Text("Frutas"), title_size=40
+            labels_size=40, title=ft.Text("Frutas"), title_size=40,
         ),
         bottom_axis=ft.ChartAxis(
             labels=[
@@ -84,7 +84,7 @@ def main(page: ft.Page):
             color=ft.colors.GREY_300, width=1, dash_pattern=[3, 3]
         ),
         tooltip_bgcolor=ft.colors.with_opacity(0.5, ft.colors.GREY_300),
-        max_y=10,
+        max_y=30,
         interactive=True,
         expand=True,
     )

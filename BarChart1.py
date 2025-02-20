@@ -59,7 +59,6 @@ def main(page: ft.Page):
                 ],
             ),
         ],
-
         border=ft.border.all(1, ft.colors.BLUE), # Borde del área de graficacion (recuadro)
 
         # eje izquierdo (y)
