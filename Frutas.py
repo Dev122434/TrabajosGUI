@@ -89,6 +89,7 @@ def main(page: ft.Page):
         expand=True,
     )
 
+
     page.add(chart)
 
 ft.app(target=main)
