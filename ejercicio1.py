@@ -20,6 +20,7 @@ def main(page: ft.Page):
     page.add(ahorro)
 
     def btn_click(e):
+        # Hacemos referencia a la variable definida fuera de la funcion
         global indice
         ahorro_value = float(ahorro.value)
         resultado(ahorro_value)

@@ -6,7 +6,7 @@ def main(page: ft.Page):
     page.window_width = 500
     page.window_height = 800
 
-    def btn_click(e):
+    def btn_click(e):   
         p1 = 70
         p2 = 150
         velocidad = 1
