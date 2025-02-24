@@ -1,5 +1,6 @@
 import flet as ft
 
+trabajadores = ['Trabajador 1', 'Trabajador 2', 'Trabajador 3']
 trabajador_seleccionado = {"Trabajador 1": 0, "Trabajador 2": 0, "Trabajador 3": 0}
 
 def resultado(pago_value, horas_value):
@@ -16,7 +17,8 @@ def actualizar_grafica():
                 color=color,
                 tooltip=trabajador,
                 border_radius=10
-            )]
+            )],
+            text=ft.Text(trabajador, size=15)
         )
         for i, (trabajador, color) in enumerate([
             ("Trabajador 1", ft.colors.BLUE),
