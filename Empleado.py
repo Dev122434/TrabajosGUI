@@ -1,11 +1,12 @@
 import flet as ft
 
 listResultado = []
-indice = 1 
+indice = 1
+sueldo = None
 
-def horasLista(ahorro_value=None):
-    if ahorro_value is not None:
-        listResultado.append(ahorro_value)
+def horasLista(valor_horas=None):
+    if valor_horas is not None:
+        listResultado.append(valor_horas)
 
 def actualizar_grafica():
     return [
@@ -13,25 +14,26 @@ def actualizar_grafica():
             x=i,
             bar_rods=[ft.BarChartRod(
                 from_y=0,
-                to_y=6,
+                to_y=(listResultado[i] if i < len(listResultado) else 0),
                 width=40,
                 color=color,
-                tooltip=empleado,
+                tooltip=f"{empleado}: {(listResultado[i] if i < len(listResultado) else 0)} horas",
                 border_radius=10
             )],
-            text=ft.Text(empleado, size=15)
         )
         for i, (empleado, color) in enumerate([
-            ("Dia 1", ft.colors.PURPLE),
+            ("Dia 1", ft.colors.BLUE),
             ("Dia 2", ft.colors.RED),
-            ("Dia 3", ft.colors.GREEN),
-            ("Dia 4", ft.colors.BLUE),
-            ("Dia 5", ft.colors.ORANGE),
-            ("Dia 6", ft.colors.DEEP_ORANGE),
+            ("Dia 3", ft.colors.PURPLE),
+            ("Dia 4", ft.colors.GREEN),
+            ("Dia 5", ft.colors.YELLOW),
+            ("Dia 6", ft.colors.ORANGE),
         ])
     ]
 
 def main(page: ft.Page):
+    global sueldo, indice
+
     page.title = 'Empleado'
     page.scroll = 'adaptive'
     page.window_width = 500
@@ -43,47 +45,21 @@ def main(page: ft.Page):
     page.add(texto_mes)
     page.add(horas)
 
-    def btn_click(e):
-        # Hacemos referencia a la variable definida fuera de la funcion
-        global indice
-        horas_value = int(horas.value)
-        horasLista(horas_value)
-        
-        horas.value = ''
-        
-        indice += 1
-
-        if indice < 7:
-            texto_mes.value = f'{indice}. Ingrese la cantidad de horas trabajadas'
-            page.update()
-
-    if (indice == 6):
-        sueldo_mes = ft.Text('1. Ingrese el sueldo del trabajador', size=20, italic=False)
-        page.add(sueldo_mes)
-        sueldo = ft.TextField(label='Sueldo')
-        page.add(sueldo)
-
-
-    def btn_total(e):
-        sueldo_value = sueldo.value
-        total = sum(listResultado) * sueldo_value
-        result_text = ft.Text('El sueldo es: ' + str(total), size=30, italic=False)
-        page.add(result_text)
-
+    global chart
     chart = ft.BarChart(
-        bar_groups = actualizar_grafica(),
+        bar_groups=actualizar_grafica(),
         border=ft.border.all(1, ft.colors.BLUE),
         left_axis=ft.ChartAxis(
-            labels_size=40, title=ft.Text("Empleado"), title_size=40
+            labels_size=40, title=ft.Text("Horas"), title_size=40
         ),
         bottom_axis=ft.ChartAxis(
             labels=[
-                ft.ChartAxisLabel(value=0, label=ft.Container(ft.Text('Dia 1'), padding=40)),
-                ft.ChartAxisLabel(value=0, label=ft.Container(ft.Text('Dia 2'), padding=40)),
-                ft.ChartAxisLabel(value=0, label=ft.Container(ft.Text('Dia 3'), padding=40)),
-                ft.ChartAxisLabel(value=0, label=ft.Container(ft.Text('Dia 4'), padding=40)),
-                ft.ChartAxisLabel(value=1, label=ft.Container(ft.Text('Dia 5'), padding=40)),
-                ft.ChartAxisLabel(value=2, label=ft.Container(ft.Text('Dia 6'), padding=40)),
+                ft.ChartAxisLabel(value=1, label=ft.Container(ft.Text('Dia 1'), padding=40)),
+                ft.ChartAxisLabel(value=2, label=ft.Container(ft.Text('Dia 2'), padding=40)),
+                ft.ChartAxisLabel(value=3, label=ft.Container(ft.Text('Dia 3'), padding=40)),
+                ft.ChartAxisLabel(value=4, label=ft.Container(ft.Text('Dia 4'), padding=40)),
+                ft.ChartAxisLabel(value=5, label=ft.Container(ft.Text('Dia 5'), padding=40)),
+                ft.ChartAxisLabel(value=6, label=ft.Container(ft.Text('Dia 6'), padding=40)),
             ],
             labels_size=40,
         ),
@@ -91,14 +67,42 @@ def main(page: ft.Page):
             color=ft.colors.GREY_300, width=1, dash_pattern=[3, 3]
         ),
         tooltip_bgcolor=ft.colors.with_opacity(0.5, ft.colors.GREY_300),
-        max_y=20,
+        max_y=30, 
         interactive=True,
         expand=True,
     )
-
     page.add(chart)
 
-    page.add(ft.ElevatedButton('Ingresar Horas', on_click=btn_click))
-    page.add(ft.ElevatedButton('Mostrar sueldo', on_click=btn_total))
+    def btn_click(e):
+        global indice, sueldo
+        horas_value = int(horas.value)
+
+        horasLista(horas_value)
+        horas.value = ''
+
+        indice += 1
+        chart.bar_groups = actualizar_grafica()
+
+        if indice <= 6:
+            texto_mes.value = f'{indice}. Ingrese la cantidad de horas trabajadas'
+        elif indice == 7:
+            sueldo_mes = ft.Text('Ingrese el sueldo del trabajador', size=20, italic=False)
+            page.add(sueldo_mes)
+            sueldo = ft.TextField(label='Sueldo')
+            page.add(sueldo)
+        page.update()
+
+    def btn_total(e):
+        sueldo_value = float(sueldo.value)
+
+        total = sum(listResultado) * sueldo_value
+        result_text = ft.Text('El sueldo es: ' + str(total), size=30, italic=False)
+        page.add(result_text)
+        page.update()
+
+    btnIngresar = ft.ElevatedButton('Ingresar Horas', on_click=btn_click)
+    btnSueldo = ft.ElevatedButton('Mostrar sueldo', on_click=btn_total)
+    page.add(btnIngresar)
+    page.add(btnSueldo)
 
 ft.app(target=main)
